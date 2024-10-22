@@ -1,9 +1,17 @@
 from playwright.sync_api import sync_playwright
 import time
 import os
+import glob
 
 # 카드 정보 오류 확인
 class PaymentVerificationError(Exception):
+    print(Exception)
+
+# 주소 파일 오류 확인
+class NoAddressFileError(Exception):
+    print(Exception)
+
+class TooManyAddressFilesError(Exception):
     print(Exception)
 
 def handle_dialog(dialog):
@@ -25,6 +33,19 @@ def login_and_cache(context):
     # 20초 후 로그인 캐시 저장
     context.storage_state(path=AUTH_FILE)
     print("Login state saved to cache.")
+
+def find_file():
+    xls_files = glob.glob("*.xls") + glob.glob("*.xlsx")
+    if not xls_files:
+        print("No .xls or .xlsx files found.")
+        raise NoAddressFileError("No .xls or .xlsx files found.")
+
+    if len(xls_files) > 1:
+        print("More than 1 address file found.")
+        raise TooManyAddressFilesError("More than two .xls or .xlsx files found.")
+
+    file_to_upload = xls_files[0]
+    return file_to_upload
 
 def execute_drive(card_info):
     with sync_playwright() as p:
@@ -78,11 +99,15 @@ def execute_drive(card_info):
         page.select_option('#semiCode', '510')
         time.sleep(0.5)
 
-        # Click on the button "주소(파일)이용하기"
+
+        # 업로드할 주소 파일 찾기 (1개만!)
+        file_to_upload = find_file()
+
+        # 주소(파일)이용하기
         with page.expect_popup() as popup_info:
             page.click('#btnUseAddrFile')
             popup = popup_info.value
-            popup.set_input_files('#uploadFile', 'template_befrecev.xls')
+            popup.set_input_files('#uploadFile', file_to_upload)
         time.sleep(0.5)
 
         # 카드 번호 입력
