@@ -2,50 +2,13 @@ from playwright.sync_api import sync_playwright
 import time
 import os
 import glob
+from utils import handle_dialog, login_and_cache, find_file
 
 # 카드 정보 오류 확인
 class PaymentVerificationError(Exception):
-    print(Exception)
-
-# 주소 파일 오류 확인
-class NoAddressFileError(Exception):
-    print(Exception)
-
-class TooManyAddressFilesError(Exception):
-    print(Exception)
-
-def handle_dialog(dialog):
-    print(f"Dialog type: {dialog.type}")
-    alert_message = dialog.message
-    print(f"Alert message: {alert_message}")
-    dialog.accept()
-    time.sleep(2)
-
+    pass
 
 AUTH_FILE = "auth_state.json"  # Path to save the cached authentication state
-
-def login_and_cache(context):
-    """
-    Logs in manually and saves the authenticated session state to a file.
-    """
-    # 수동 로그인 20초
-    time.sleep(20)
-    # 20초 후 로그인 캐시 저장
-    context.storage_state(path=AUTH_FILE)
-    print("Login state saved to cache.")
-
-def find_file():
-    xls_files = glob.glob("*.xls") + glob.glob("*.xlsx")
-    if not xls_files:
-        print("No .xls or .xlsx files found.")
-        raise NoAddressFileError("No .xls or .xlsx files found.")
-
-    if len(xls_files) > 1:
-        print("More than 1 address file found.")
-        raise TooManyAddressFilesError("More than two .xls or .xlsx files found.")
-
-    file_to_upload = xls_files[0]
-    return file_to_upload
 
 def execute_drive(card_info):
     with sync_playwright() as p:
@@ -73,7 +36,7 @@ def execute_drive(card_info):
 
         except Exception as e:
             print(f"Login failed or cache is not usable: {str(e)}")
-            login_and_cache(context)
+            login_and_cache(context, AUTH_FILE)
 
         page.goto("https://service.epost.go.kr/front.commonpostplus.RetrieveAcceptPlus.postal?gubun=1")
         time.sleep(2)
@@ -197,7 +160,7 @@ def execute_drive(card_info):
 
         # Click the close button
         confirm_button.click()
-        time.sleep(10000)
+        time.sleep(1000)
 
         page.close()
         browser.close()
