@@ -1,7 +1,6 @@
 from playwright.sync_api import sync_playwright
 import time
 import os
-import glob
 from utils import handle_dialog, login_and_cache, find_file
 
 # 카드 정보 오류 확인
@@ -36,7 +35,7 @@ def execute_drive(card_info):
 
         except Exception as e:
             print(f"Login failed or cache is not usable: {str(e)}")
-            login_and_cache(context, AUTH_FILE)
+            login_and_cache(context, page, AUTH_FILE)
 
         page.goto("https://service.epost.go.kr/front.commonpostplus.RetrieveAcceptPlus.postal?gubun=1")
         time.sleep(2)

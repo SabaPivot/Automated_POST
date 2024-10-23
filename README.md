@@ -24,3 +24,8 @@ $env:PLAYWRIGHT_BROWSERS_PATH="0"
 playwright install chromium
 pyinstaller -F main.py
 ```
+
+# TimeSleep 사용하지 말기
+```aiignore
+https://playwright.dev/python/docs/library
+```

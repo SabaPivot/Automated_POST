@@ -18,10 +18,11 @@ def handle_dialog(dialog):
     time.sleep(1)
 
 
-def login_and_cache(context, file):
+def login_and_cache(context, page, file):
     """
     Logs in manually and saves the authenticated session state to a file.
     """
+    page.click("#loginSURL")
     # 수동 로그인 20초
     time.sleep(20)
     # 20초 후 로그인 캐시 저장
