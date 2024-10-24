@@ -11,9 +11,10 @@ class TooManyAddressFilesError(Exception):
 def handle_dialog(dialog):
     dt = dialog.type
     alert_message = dialog.message
-    print(f"{dt} message: \n{alert_message}")
-    # if alert_message == "결제카드를 재검증 해주시기 바랍니다.":
-    #     exit()
+    if alert_message == "결제카드를 재검증 해주시기 바랍니다.":
+        pass
+    else:
+        print(f"{dt} message: \n{alert_message}")
     dialog.accept()
     time.sleep(1)
 
