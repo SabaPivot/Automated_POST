@@ -16,11 +16,11 @@ def execute_drive(card_info):
 
         # 캐시 파일이 존재하면 로그인
         if os.path.exists(AUTH_FILE):
-            print("Using cached login state.")
+            print("이전 로그인 정보로 로그인을 시도합니다.")
             context = browser.new_context(storage_state=AUTH_FILE)
         # 캐시 파일이 존재하지 않으면 수동으로 로그인
         else:
-            print("No cache found, logging in manually.")
+            print("이전 로그인 정보를 찾지 못했습니다. 수동으로 로그인해주세요. 20초 후에 자동화 프로그램이 시작됩니다.")
             context = browser.new_context()
 
         page = context.new_page()
@@ -31,14 +31,13 @@ def execute_drive(card_info):
             # 로그인 성공했는지 확인
             member_info_visible = page.is_visible('div.memberInfo')
             if not member_info_visible:  # Adjust the selector to a relevant logged-in state element
-                raise Exception("Login required")
+                raise Exception("로그인이 필요합니다.")
 
         except Exception as e:
-            print(f"Login failed or cache is not usable: {str(e)}")
+            print(f"로그인이 실패했습니다. 수동으로 로그인해주세요. 20초 후에 자동화 프로그램이 시작됩니다.: {str(e)}")
             login_and_cache(context, page, AUTH_FILE)
 
         page.goto("https://service.epost.go.kr/front.commonpostplus.RetrieveAcceptPlus.postal?gubun=1")
-        time.sleep(2)
 
         # 보내는분 정보 수정 (이름 입력)
         page.fill('#tSndNm', '')
@@ -55,11 +54,9 @@ def execute_drive(card_info):
         popup = popup_info.value
         popup.close()
 
-        time.sleep(0.5)
 
         # 내용물 코드 '510' 선택
         page.select_option('#semiCode', '510')
-        time.sleep(0.5)
 
 
         # 업로드할 주소 파일 찾기 (1개만!)
@@ -70,7 +67,6 @@ def execute_drive(card_info):
             page.click('#btnUseAddrFile')
             popup = popup_info.value
             popup.set_input_files('#uploadFile', file_to_upload)
-        time.sleep(0.5)
 
         # 카드 번호 입력
         card1 = card_info["card1"]
@@ -114,10 +110,11 @@ def execute_drive(card_info):
         creditBirth.fill(credit_birth)
 
         # 결제카드검증
-        time.sleep(0.5)
         page.wait_for_selector('#certCreditInfo')  # Wait for the button to appear
+        time.sleep(2)
         page.click('#certCreditInfo')
         time.sleep(1)
+        page.click('#certCreditInfo')
 
         error_locator1 = page.locator('li#mag4.red_b')
         error_locator2 = page.locator('li#mag5.red_b')
@@ -144,12 +141,12 @@ def execute_drive(card_info):
 
         # 접수 신청
         page.on("dialog", handle_dialog)
-        time.sleep(0.2)
         page.click("#btnReqClick")
         # 주소 검증 팝업 (자동 처리)
-        time.sleep(1)
 
         # 다시 접수 신청
+        page.click('#btnReqClick')
+        time.sleep(1)
         page.click('#btnReqClick')
         # Wait for the notification to appear
         page.wait_for_selector('#notiContentDiv.show')
@@ -159,7 +156,8 @@ def execute_drive(card_info):
 
         # Click the close button
         confirm_button.click()
-        time.sleep(1000)
 
-        page.close()
-        browser.close()
+        time.sleep(5000)
+
+        # page.close()
+        # browser.close()
