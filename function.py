@@ -25,12 +25,12 @@ def execute_drive(card_info):
 
         page = context.new_page()
 
-        # Try accessing the website using the cached state
+        # 캐시로 웹사이트 접속하기
         try:
             page.goto("https://service.epost.go.kr/front.commonpostplus.RetrieveAcceptPlus.postal?gubun=1")
             # 로그인 성공했는지 확인
             member_info_visible = page.is_visible('div.memberInfo')
-            if not member_info_visible:  # Adjust the selector to a relevant logged-in state element
+            if not member_info_visible:
                 raise Exception("로그인이 필요합니다.")
 
         except Exception as e:
@@ -54,6 +54,14 @@ def execute_drive(card_info):
         popup = popup_info.value
         popup.close()
 
+        # 우체통 접수 서비스
+        # 팝업 창 popup_info로 받아주기
+        with page.expect_popup() as popup_info:
+            page.click("#mBoxThwrY2")
+
+        # 팝업창 핸들링 (닫기)
+        popup = popup_info.value
+        popup.close()
 
         # 내용물 코드 '510' 선택
         page.select_option('#semiCode', '510')

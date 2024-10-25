@@ -1,5 +1,7 @@
 import time
 import glob
+import os
+import json
 
 # 주소 파일 오류 확인
 class NoAddressFileError(Exception):
@@ -45,7 +47,7 @@ def find_file():
     return file_to_upload
 
 def card_isvalid():
-    card_number = input("카드 번호를 입력하세요: ")
+    card_number = input("카드 번호를 입력하세요: ").strip()
     if len(card_number) != 16:
         print("입력하신 카드 번호가 16자리가 아닙니다. \n")
         return card_isvalid()
@@ -54,7 +56,7 @@ def card_isvalid():
 
 
 def card_month_year():
-    card_month = input("카드 유효 기간을 입력하세요 ex) 08/27: ")
+    card_month = input("카드 유효 기간을 입력하세요 ex) 08/27: ").strip()
     if len(card_month) != 5:
         print("카드 유효 기간을 잘못 입력하였습니다. 다시 입력해주세요. \n")
         return card_month_year()
@@ -63,7 +65,7 @@ def card_month_year():
         return month, year
 
 def card_password():
-    pwd = input("카드 비밀번호 앞 두 자리를 입력하세요: ")
+    pwd = input("카드 비밀번호 앞 두 자리를 입력하세요: ").strip()
     if len(pwd) != 2:
         print("카드 비밀번호 앞 두 자리를 잘못 입력하였습니다. 다시 입력해주세요. \n")
         return card_password()
@@ -77,3 +79,27 @@ def birthdate():
         return birthdate()
     else:
         return bd
+
+
+def load_card_info(card_info_file):
+    """Load card information from a JSON file."""
+    if os.path.exists(card_info_file):
+        with open(card_info_file, 'r') as file:
+            saved_card = json.load(file)
+        print("현재 사용 중인 카드 정보: ")
+        keys = ['card1', 'card2', 'card3', 'card4']
+        card_number, expire_date = "", ""
+        for key in keys:
+            card_number += saved_card[key]
+        expire_date = f"{saved_card['month']}/{saved_card['year']}"
+        print(f"저장된 카드 번호: {card_number}")
+        print(f"저장된 카드 유효기간: {expire_date}")
+        return saved_card
+    else:
+        return None
+
+
+def save_card_info(card_info_file, card_info):
+    """Save card information to a JSON file."""
+    with open(card_info_file, 'w') as file:
+        json.dump(card_info, file)
