@@ -111,7 +111,7 @@ def execute_drive(card_info):
 
         # 결제카드검증
         page.wait_for_selector('#certCreditInfo')  # Wait for the button to appear
-        time.sleep(2)
+        time.sleep(1)
         page.click('#certCreditInfo')
         time.sleep(1)
         page.click('#certCreditInfo')
@@ -146,7 +146,6 @@ def execute_drive(card_info):
 
         # 다시 접수 신청
         page.click('#btnReqClick')
-        time.sleep(1)
         page.click('#btnReqClick')
         # Wait for the notification to appear
         page.wait_for_selector('#notiContentDiv.show')
@@ -157,7 +156,10 @@ def execute_drive(card_info):
         # Click the close button
         confirm_button.click()
 
-        time.sleep(5000)
+        if page.url == "https://service.epost.go.kr/front.commonpostplus.RetrieveRegiPostPlus.postal":
+            print("간편사전접수 신청이 완료되었습니다.")
+
+        time.sleep(50000)
 
         # page.close()
         # browser.close()
