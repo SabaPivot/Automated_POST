@@ -34,12 +34,12 @@ def login_and_cache(context, page, file):
 def find_file():
     xls_files = glob.glob("*.xls") + glob.glob("*.xlsx")
     if not xls_files:
-        print("No .xls or .xlsx files found.")
-        raise NoAddressFileError("No .xls or .xlsx files found.")
+        print(".xls 또는 .xlsx 형식의 파일을 찾지 못했습니다.")
+        time.sleep(99999)
 
     if len(xls_files) > 1:
-        print("More than 1 address file found.")
-        raise TooManyAddressFilesError("More than two .xls or .xlsx files found.")
+        print(".xls 또는 .xlsx 파일이 하나 이상 존재합니다.")
+        time.sleep(99999)
 
     file_to_upload = xls_files[0]
     return file_to_upload
