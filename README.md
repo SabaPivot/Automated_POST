@@ -1,16 +1,5 @@
 # Automated_POST
 
-## 로그인
-입력값:  
-<t>  new_login?  
-<t>    True:  
-<t>      id:  
-<t>      pw:  
-<t>      새롭게 입력, 로그인, 메인페이지로 이동  
-<t>    False:  
-<t>      원래 로그인 정보 활용해서 로그인.  
-  
-
 
 ## User Expereince
 ### 로그인
@@ -26,6 +15,6 @@ pyinstaller -F main.py
 ```
 
 # TimeSleep 사용하지 말기
-```aiignore
+```
 https://playwright.dev/python/docs/library
 ```
